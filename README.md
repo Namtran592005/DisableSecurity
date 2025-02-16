@@ -1,6 +1,6 @@
-# System Security Tool
+# DisableSecurity
 ## Giới thiệu
-System Security Tool là một ứng dụng được phát triển bằng Python, sử dụng PyQt5 để cung cấp giao diện người dùng đồ họa. Ứng dụng này cho phép người dùng thực hiện các thao tác liên quan đến bảo mật hệ thống, bao gồm việc vô hiệu hóa Windows Security, phần mềm chống virus của bên thứ ba, và các dịch vụ bảo mật khác.
+DisableSecurity là một ứng dụng được phát triển bằng Python, sử dụng PyQt5 để cung cấp giao diện người dùng đồ họa. Ứng dụng này cho phép người dùng thực hiện các thao tác liên quan đến bảo mật hệ thống, bao gồm việc vô hiệu hóa Windows Security, phần mềm chống virus của bên thứ ba, và các dịch vụ bảo mật khác.
 
 ## Tính năng
 - Sao lưu và khôi phục Registry: Cho phép người dùng sao lưu và khôi phục các thiết lập registry của hệ thống.
