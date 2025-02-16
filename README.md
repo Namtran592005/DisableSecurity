@@ -1,10 +1,12 @@
 # DisableSecurity - Công cụ Tắt Bảo Mật Windows
 
-[![Version](https://img.shields.io/badge/version-1.2-blue.svg)](https://github.com/yourusername/yourrepository)
+[![Version](https://img.shields.io/badge/version-1.5-blue.svg)](https://github.com/yourusername/yourrepository)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yourusername/yourrepository/blob/main/LICENSE)
 <!-- Thay thế yourusername và yourrepository bằng thông tin của bạn -->
 
 ## Giới thiệu
+
+[Screenshot 2025-02-17 061613.png]
 
 **DisableSecurity** là một công cụ mạnh mẽ, được phát triển bằng Python và PyQt5, cho phép bạn vô hiệu hóa nhiều tính năng bảo mật cốt lõi của Windows.  Công cụ này được thiết kế dành cho các nhà nghiên cứu bảo mật, quản trị viên hệ thống và những người dùng có kinh nghiệm, cần kiểm soát sâu hơn đối với các cài đặt bảo mật trên hệ thống của họ (trong môi trường thử nghiệm).
 
