@@ -6,7 +6,7 @@
 
 ## Giới thiệu
 
-[Screenshot 2025-02-17 061613.png]
+[(https://github.com/Namtran592005/DisableSecurity/blob/main/Screenshot%202025-02-17%20061613.png)]
 
 **DisableSecurity** là một công cụ mạnh mẽ, được phát triển bằng Python và PyQt5, cho phép bạn vô hiệu hóa nhiều tính năng bảo mật cốt lõi của Windows.  Công cụ này được thiết kế dành cho các nhà nghiên cứu bảo mật, quản trị viên hệ thống và những người dùng có kinh nghiệm, cần kiểm soát sâu hơn đối với các cài đặt bảo mật trên hệ thống của họ (trong môi trường thử nghiệm).
 
