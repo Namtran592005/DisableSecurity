@@ -10,7 +10,7 @@ System Security Tool là một ứng dụng được phát triển bằng Python
 - Vô hiệu hóa các tính năng bảo mật khác của Windows: Tắt các tính năng bảo mật không cần thiết để cải thiện hiệu suất hệ thống.
 - Giao diện người dùng thân thiện: Giao diện được thiết kế đẹp mắt, dễ sử dụng với các nút chức năng rõ ràng.
 ## Cách sử dụng
-tắt security thủ công trước
+- Tắt security thủ công trước
 - Chạy ứng dụng với quyền Administrator: Để thực hiện các thay đổi hệ thống, người dùng cần chạy ứng dụng với quyền Administrator.
 - Chọn chức năng cần thực hiện: Từ giao diện chính, người dùng có thể chọn các chức năng như sao lưu registry, khôi phục registry, vô hiệu hóa Windows Security, và nhiều hơn nữa.
 - Xác nhận trước khi thực hiện: Ứng dụng sẽ yêu cầu xác nhận trước khi thực hiện các thay đổi quan trọng để tránh thao tác nhầm lẫn.
