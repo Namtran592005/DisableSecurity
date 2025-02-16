@@ -18,7 +18,7 @@ import qdarkstyle
 BACKUP_DIR = "backup"
 LOG_FILE = "system_tool.log"
 ICON_FILE = "icon.ico"
-VERSION = "1.3"  # Increased version number
+VERSION = "1.5"  # Increased version number
 AUTHOR = "Namtran5905"
 DESCRIPTION = "A tool to disable various Windows security features. Use with extreme caution!"
 
@@ -42,12 +42,12 @@ ENCODED_REGISTRY_KEYS = [
     encode_string("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System"),
     encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate"),
     encode_string("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments"),
-    encode_string("HKLM\\SOFTWARE\\Microsoft\\Windows Defender\\Features"),  # Tamper Protection
-    encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager"),  # D.E.P
-    encode_string("HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\kernel"),  # CFG
+    encode_string("HKLM\\SOFTWARE\\Microsoft\\Windows Defender\\Features"),
+    encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager"),
+    encode_string("HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\kernel"),
     encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Controlled Folder Access"),
     encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection"),
-    encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System") # SmartScreen
+    encode_string("HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System")
 ]
 
 # --- Translations ---
@@ -58,7 +58,7 @@ translations = {
         "backup_registry": "Backup Registry",
         "restore_registry": "Restore Registry",
         "disable_windows_security": "Disable Windows Security",
-        "disable_antivirus": "Disable Antivirus",
+        "disable_antivirus": "Disable Antivirus (Experiment)",
         "prevent_service_restarts": "Prevent Service Restarts",
         "disable_windows_features": "Disable Windows Features",
         "disable_all": "Disable All",
@@ -66,12 +66,14 @@ translations = {
         "backup_success": "Registry backed up successfully to: {}",
         "backup_error": "Error backing up registry: {}",
         "restore_success": "Registry restored successfully.",
-        "restore_error": "Error restoring registry: {}",
+        "restore_error": "Error restoring registry.",
         "restore_failed": "Registry restoration failed: {}",
         "no_backup": "No registry backup found.",
         "disable_security_success": "Windows Security and Defender disabled.",
         "disable_security_error": "Error disabling Windows Security.",
         "disable_antivirus_info": "Attempted to disable third-party antivirus.",
+        "disable_antivirus_success": "Third-party antivirus disabled successfully.",
+        "disable_antivirus_error": "Error disabling third-party antivirus.",
         "prevent_services_info": "Attempted to prevent security service restarts.",
         "disable_features_success": "Other Windows security features disabled.",
         "disable_features_error": "Error disabling Windows features.",
@@ -100,15 +102,17 @@ translations = {
         "feature_asr": "Attack Surface Reduction (ASR)",
         "feature_tamper": "Tamper Protection",
         "feature_eventlog": "Event Logging",
+        "refresh_status": "Refresh Status",
+        "refresh_complete": "Status refreshed!",
 
     },
     "vi": {
-        "window_title": "Tắt Bảo Mật",
+        "window_title": "DisableSecurity",
         "title": "Vô Hiệu Hóa Tính Năng Bảo Mật",
         "backup_registry": "Sao Lưu Registry",
         "restore_registry": "Khôi Phục Registry",
         "disable_windows_security": "Vô Hiệu Hóa Windows Security",
-        "disable_antivirus": "Vô Hiệu Hóa Antivirus",
+        "disable_antivirus": "Vô Hiệu Hóa Antivirus (Experiment)",
         "prevent_service_restarts": "Ngăn Dịch Vụ Khởi Động Lại",
         "disable_windows_features": "Vô Hiệu Hóa Tính Năng Windows",
         "disable_all": "Vô Hiệu Hóa Tất Cả",
@@ -116,12 +120,14 @@ translations = {
         "backup_success": "Đã sao lưu registry thành công vào: {}",
         "backup_error": "Lỗi khi sao lưu registry: {}",
         "restore_success": "Đã khôi phục registry thành công.",
-        "restore_error": "Lỗi khi khôi phục registry: {}",
+        "restore_error": "Lỗi khi khôi phục registry.",
         "restore_failed": "Khôi phục registry thất bại: {}",
         "no_backup": "Không tìm thấy bản sao lưu registry.",
         "disable_security_success": "Đã vô hiệu hóa Windows Security và Defender.",
         "disable_security_error": "Lỗi khi vô hiệu hóa Windows Security.",
         "disable_antivirus_info": "Đã cố gắng vô hiệu hóa phần mềm diệt virus của bên thứ ba.",
+        "disable_antivirus_success": "Đã vô hiệu hóa phần mềm diệt virus của bên thứ ba.",
+        "disable_antivirus_error": "Lỗi vô hiệu hóa phần mềm diệt virus của bên thứ ba.",
         "prevent_services_info": "Đã cố gắng ngăn các dịch vụ bảo mật khởi động lại.",
         "disable_features_success": "Đã vô hiệu hóa các tính năng bảo mật Windows khác.",
         "disable_features_error": "Lỗi khi vô hiệu hóa các tính năng Windows.",
@@ -150,20 +156,19 @@ translations = {
         "feature_asr": "Giảm bề mặt tấn công (ASR)",
         "feature_tamper": "Chống giả mạo",
         "feature_eventlog": "Ghi nhật ký sự kiện",
+        "refresh_status": "Làm mới trạng thái",
+        "refresh_complete": "Đã làm mới trạng thái!",
     }
 }
 
 # --- Multithreading Helpers ---
 
 class WorkerSignals(QObject):
-    """Signals for communication between worker thread and main thread."""
     finished = pyqtSignal()
     error = pyqtSignal(str)
-    progress = pyqtSignal(int)  # Could be used for a progress bar
     result = pyqtSignal(object)
 
 class Worker(QRunnable):
-    """Runnable task for execution in a separate thread."""
     def __init__(self, fn, *args, **kwargs):
         super(Worker, self).__init__()
         self.fn = fn
@@ -172,21 +177,20 @@ class Worker(QRunnable):
         self.signals = WorkerSignals()
 
     def run(self):
-        """Executes the function and emits signals."""
         try:
             result = self.fn(*self.args, **self.kwargs)
-            self.signals.result.emit(result)  # Emit the result
+            if result is not None:
+                self.signals.result.emit(result)
         except Exception as e:
-            self.signals.error.emit(str(e))  # Emit error signal
+            self.signals.error.emit(str(e))
         finally:
-            self.signals.finished.emit()  # Emit finished signal
+            self.signals.finished.emit()
 
 def run_in_thread(fn):
-    """Decorator to run a function in a separate thread."""
     def wrapper(*args, **kwargs):
         worker = Worker(fn, *args, **kwargs)
         QThreadPool.globalInstance().start(worker)
-        return worker  # Return the worker (in case you need to connect to signals)
+        return worker
     return wrapper
 
 # --- Helper Functions ---
@@ -214,77 +218,40 @@ def reg_key_exists(key):
 
 @run_in_thread
 def backup_registry(self):
-    """Backs up specific registry keys, only if they exist."""
+    """Backs up the entire HKLM\\SOFTWARE registry hive."""
     create_backup_dir()
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_file_latest = os.path.join(BACKUP_DIR, "registry_backup_latest.reg")
     backup_file_timestamped = os.path.join(BACKUP_DIR, f"registry_backup_{timestamp}.reg")
 
     try:
-        with open(backup_file_latest, "w") as f_latest, open(backup_file_timestamped, "w") as f_timestamped:
-            for encoded_key in ENCODED_REGISTRY_KEYS:
-                key = decode_string(encoded_key)
-                if reg_key_exists(key):
-                    process = subprocess.run(["reg", "export", key, "/y"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
-                    if process.returncode != 0:
-                        error_message = f"Error exporting key {key}: {process.stderr}"
-                        logging.error(error_message)
-                        # Don't return here, continue with other keys, but signal error
-                        self.signals.error.emit(error_message)
-                        return False, error_message  # Return on the first error
+        # Backup to both latest and timestamped files
+        subprocess.run(["reg", "export", "HKLM\\SOFTWARE", backup_file_latest, "/y"], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(["reg", "export", "HKLM\\SOFTWARE", backup_file_timestamped, "/y"], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
-                    f_latest.write(process.stdout)
-                    f_timestamped.write(process.stdout)
-                else:
-                    logging.info(f"Registry key does not exist, skipping backup: {key}")
-
-        logging.info(f"Registry keys backed up to {backup_file_latest} and {backup_file_timestamped}")
-        return True, backup_file_latest # Emit result on success
-
-    except Exception as e:
+        logging.info(f"Registry backed up to {backup_file_latest} and {backup_file_timestamped}")
+        return True, backup_file_latest  # Return success and the latest backup file path
+    except subprocess.CalledProcessError as e:
         logging.error(f"Error backing up registry: {e}")
-        # Don't reraise, signal the error
-        self.signals.error.emit(str(e))
+        self.signals.error.emit(str(e)) # Signal the error
         return False, str(e)
 
 
 @run_in_thread
+@run_in_thread
 def restore_registry(self, backup_file):
-    """Restores the registry, handling errors."""
+    """Restores the entire HKLM\\SOFTWARE registry hive from a backup file."""
     try:
-        if os.path.getsize(backup_file) == 0:
-            msg = f"Backup file is empty: {backup_file}"
-            logging.error(msg)
-            self.signals.error.emit(msg)  # Use the signal
-            return False
-
-        with open(backup_file, "r") as f:
-            if not f.readline().startswith("Windows Registry Editor"):
-                msg = f"Backup file has invalid format: {backup_file}"
-                logging.error(msg)
-                self.signals.error.emit(msg) # Use the signal
-                return False
-
-        result = subprocess.run(["reg", "import", backup_file], capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
-
-        if result.returncode != 0:
-            msg = f"Registry import failed: {result.stderr}"
-            logging.error(msg)
-            self.signals.error.emit(msg)  # Signal the specific error
-            return False  # Indicate failure
-
+        subprocess.run(["reg", "import", backup_file], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
         logging.info(f"Registry restored from {backup_file}")
-        return True # Signal success
-
-    except FileNotFoundError:
-        msg = f"Backup file not found: {backup_file}"
-        logging.error(msg)
-        self.signals.error.emit(msg)
+        return True  # Signal success
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error restoring registry: {e}")
+        self.signals.error.emit(str(e)) # Signal errors
         return False
-    except Exception as e:
-        msg = f"Unexpected error during restore: {e}"
-        logging.error(msg)
-        self.signals.error.emit(msg)  # Signal any other exceptions
+    except FileNotFoundError:
+        logging.error(f"Backup file not found: {backup_file}")
+        self.signals.error.emit(f"Backup file not found: {backup_file}") # Signal error
         return False
 
 # --- Security Disabling Functions (Obfuscated and Enhanced) ---
@@ -299,24 +266,53 @@ def disable_windows_security_obfuscated(self):
         return True
     except subprocess.CalledProcessError as e:
         logging.error(f"Error disabling Windows Security: {e}")
-        self.signals.error.emit(str(e)) # Signal the error
+        self.signals.error.emit(str(e))
         return False
 
 @run_in_thread
-def disable_third_party_antivirus_obfuscated(self):
-    antivirus_software = [encode_string("kaspersky"), encode_string("eset"), encode_string("avast"), encode_string("avg"), encode_string("bitdefender"), encode_string("mcafee")]
-    for encoded_software in antivirus_software:
-        software = decode_string(encoded_software)
+def disable_third_party_antivirus_obfuscated(self, main_window):
+    """Attempts to disable common third-party antivirus, with improved robustness."""
+    antivirus_software = [
+        ("kaspersky", ["kavsvc.exe", "avp.exe"], ["KAVFS", "klif"]),  # Process names, Service names
+        ("eset", ["egui.exe", "ekrn.exe"], ["ekrn"]),
+        ("avast", ["AvastUI.exe", "AvastSvc.exe"], ["AvastAntivirus"]),
+        ("avg", ["AVGUI.exe", "avgsvc.exe"], ["AVG Antivirus"]),
+        ("bitdefender", ["bdagent.exe", "vsserv.exe"], ["bdredline", "vsserv"]),
+        ("mcafee", ["mcshield.exe", "mfefire.exe"], ["McAfeeFramework", "McAfeeEngineService"]),
+        ("norton", ["NortonSecurity.exe", "NS.exe"], ["NortonSecurity", "NortonInternetSecurity"]), # Added Norton
+        ("norton 360", ["Norton360.exe"], ["Norton360"]) # Added Norton 360
+    ]
+    success = True # Keep track of the disable action.
+    for name, processes, services in antivirus_software:
         try:
-            for proc in psutil.process_iter(['name']):
-                if software.lower() in proc.info['name'].lower():
-                    proc.kill()
-                    logging.info(f"Killed process {proc.info['name']}")
-            subprocess.run([decode_string(encode_string("sc")), decode_string(encode_string("config")), software, decode_string(encode_string("start=disabled"))], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-            logging.info(f"Disabled {software}.")
+            # Kill processes
+            for proc_name in processes:
+                for proc in psutil.process_iter(['name']):
+                    try:
+                        if proc_name.lower() in proc.info['name'].lower():
+                            proc.kill()
+                            logging.info(f"Killed process {proc.info['name']} (part of {name})")
+                    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                        pass  # Ignore if process already gone, or can't access
+
+            # Disable services
+            for svc_name in services:
+                try:
+                    subprocess.run(["sc", "config", svc_name, "start=disabled"], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    logging.info(f"Disabled service {svc_name} (part of {name})")
+                except subprocess.CalledProcessError as e:
+                    logging.error(f"Error disabling service {svc_name} (part of {name}): {e}")
+                    #Don't raise the error, because we are running with multi thread.
+                    # self.signals.error.emit(str(e)) #Error handled, but don't stop
+                    success = False # If we got error when disabling, set return value to false.
+
         except Exception as e:
-            logging.error(f"Error handling {software}: {e}")
-            self.signals.error.emit(str(e))  # Signal errors
+            logging.error(f"Unexpected error handling {name}: {e}")
+            main_window.log_message(f"Unexpected error handling {name}: {e}", logging.ERROR) # Use the passed in main_window
+            # self.signals.error.emit(str(e)) #Error handled, but don't stop.
+            success = False # If we got error when disabling, set return value to false.
+    return success
+
 
 @run_in_thread
 def prevent_security_service_restarts_obfuscated(self):
@@ -345,11 +341,11 @@ def disable_windows_features_obfuscated(self):
         return True
     except subprocess.CalledProcessError as e:
         logging.error(f"Error disabling Windows features: {e}")
-        self.signals.error.emit(str(e)) # Signal errors
+        self.signals.error.emit(str(e))
         return False
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-        self.signals.error.emit(str(e)) # Signal errors
+        self.signals.error.emit(str(e))
         return False
 
 @run_in_thread
@@ -361,7 +357,7 @@ def disable_event_logging(self):
         return True
     except subprocess.CalledProcessError as e:
         logging.error(f"Error disabling event logging: {e}")
-        self.signals.error.emit(str(e)) # Signal errors
+        self.signals.error.emit(str(e))
         return False
 
 @run_in_thread
@@ -372,7 +368,7 @@ def disable_tamper_protection(self):
         return True
     except subprocess.CalledProcessError as e:
         logging.error(f"Error disabling Tamper Protection: {e}")
-        self.signals.error.emit(str(e))  # Signal errors
+        self.signals.error.emit(str(e))
         return False
 
 @run_in_thread
@@ -389,13 +385,13 @@ def disable_asr_rules(self):
             stdout, stderr = process.communicate()
             if process.returncode != 0:
                 logging.error(f"Error disabling ASR rule {rule_id}: {stderr.decode()}")
-                self.signals.error.emit(f"Error disabling ASR rule {rule_id}: {stderr.decode()}") # Signal specific error
+                self.signals.error.emit(f"Error disabling ASR rule {rule_id}: {stderr.decode()}")
             else:
                 logging.info(f"Disabled ASR rule {rule_id}")
-        return True  # Indicate success
+        return True
     except Exception as e:
         logging.error(f"Error disabling ASR rules: {e}")
-        self.signals.error.emit(str(e))  # Signal generic error
+        self.signals.error.emit(str(e))
         return False
 
 # --- Status Checking Functions ---
@@ -567,23 +563,24 @@ class CustomMessageBox(QDialog):
     def __init__(self, title, message, icon, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.current_language = "vi"
+        self.current_language = parent.current_language if parent else "vi" # Use parent language
         if os.path.exists(ICON_FILE):
             self.setWindowIcon(QIcon(ICON_FILE))
         else:
             self.setWindowIcon(QIcon.fromTheme("dialog-warning"))
-        self.setGeometry(200, 200, 300, 150)
+        self.setGeometry(100, 100, 230, 150)
         layout = QVBoxLayout()
         self.label = QLabel(message)
         self.label.setWordWrap(True)
         self.label.setFont(QFont("Segoe UI", 10))
         layout.addWidget(self.label)
         button_layout = QHBoxLayout()
-        self.ok_button = QPushButton("OK")
+        self.ok_button = QPushButton(translations[self.current_language]["exit"])  # Translate button text
         self.ok_button.clicked.connect(self.accept)
         button_layout.addWidget(self.ok_button)
         layout.addLayout(button_layout)
         self.setLayout(layout)
+
 
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
@@ -617,20 +614,17 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(translations[self.current_language]["window_title"])
         if os.path.exists(ICON_FILE):  self.setWindowIcon(QIcon(ICON_FILE))
         else:  self.setWindowIcon(QIcon.fromTheme("security-high"))
-        self.setGeometry(100, 100, 800, 500) # Adjusted size
-        #  Removed frameless window flag: self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        self.setGeometry(300, 700, 900, 830)
         self.setup_ui()
         self.update_status_labels()
-        self.status_timer = QTimer(self)
-        self.status_timer.timeout.connect(self.update_status_labels)
-        self.status_timer.start(5000)
+
 
     def setup_ui(self):
         main_layout = QHBoxLayout()
 
         left_widget = QWidget()
         left_layout = QVBoxLayout()
-        left_layout.setContentsMargins(10, 10, 10, 10)  # Consistent margins
+        left_layout.setContentsMargins(10, 10, 10, 10)
         left_layout.setSpacing(5)
 
         buttons = [
@@ -650,8 +644,21 @@ class MainWindow(QMainWindow):
             button.setToolTip(translations[self.current_language][tooltip_key])
             button.clicked.connect(callback)
             button.setStyleSheet("""
-                QPushButton { padding: 8px 16px; border-radius: 8px; }
-                QPushButton:hover { background-color: rgba(255, 255, 255, 0.1); }
+                QPushButton {
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    background-color: #444;
+                    color: #eee;
+                    border: 1px solid #666;
+                }
+                QPushButton:hover {
+                    background-color: #555;
+                    border: 1px solid #777;
+                }
+                QPushButton:pressed {
+                    background-color: #666;
+                    border: 1px solid #888;
+                }
             """)
             left_layout.addWidget(button)
             self.buttons[text_key] = button
@@ -684,7 +691,7 @@ class MainWindow(QMainWindow):
 
         right_widget = QWidget()
         right_layout = QVBoxLayout()
-        right_layout.setContentsMargins(10, 10, 10, 10) # Consistent margins
+        right_layout.setContentsMargins(10, 10, 10, 10)
 
         status_group = QFrame()
         status_group.setObjectName("statusGroup")
@@ -725,6 +732,32 @@ class MainWindow(QMainWindow):
             self.status_labels[feature_key] = (status_label, value_label)
             row += 1
 
+        # Refresh Button
+        self.refresh_button = QPushButton(translations[self.current_language]["refresh_status"])
+        self.refresh_button.setFont(QFont("Segoe UI", 10))
+        self.refresh_button.clicked.connect(self.update_status_labels)
+        self.refresh_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                border-radius: 8px;
+                background-color: #444;
+                color: #eee;
+                border: 1px solid #666;
+            }
+            QPushButton:hover {
+                background-color: #555;
+                border: 1px solid #777;
+            }
+            QPushButton:pressed {
+                background-color: #666;
+                border: 1px solid #888;
+            }
+        """)
+        status_layout.addWidget(self.refresh_button, row, 0, 1, 2)
+        status_layout.setRowStretch(row, 0)
+        status_layout.setRowStretch(row + 1, 1)
+
+
         right_layout.addWidget(status_group)
 
         self.log_text = QTextEdit()
@@ -754,10 +787,9 @@ class MainWindow(QMainWindow):
                 border-radius: 8px;
                 padding: 10px;
             }
-        """)  # Simplified stylesheet
+        """)
 
     def update_status_labels(self):
-        """Updates the status labels with current values."""
         features = {
             "feature_defender": get_defender_status,
             "feature_firewall": get_firewall_status,
@@ -779,14 +811,22 @@ class MainWindow(QMainWindow):
             value_label.setText(status_text)
 
             if status_text == translations[self.current_language]["status_active"]:
-                value_label.setStyleSheet("color: #8fce00; background-color: #2a3800; border: 1px solid #8fce00;")  # Lighter green
+                value_label.setStyleSheet("color: #a4e472; background-color: #2a3800; border: 1px solid #a4e472;")
             elif status_text == translations[self.current_language]["status_inactive"]:
-                value_label.setStyleSheet("color: #e5534b; background-color: #442222; border: 1px solid #e5534b;")  # Lighter red
+                value_label.setStyleSheet("color: #f5624e; background-color: #442222; border: 1px solid #f5624e;")
             else:
-                value_label.setStyleSheet("color: #aaaaaa; background-color: #333333; border: 1px solid #666666;") # Lighter gray
+                value_label.setStyleSheet("color: #cccccc; background-color: #333333; border: 1px solid #666666;")
 
             label_text = translations[self.current_language][feature_key] + ":"
             label.setText(label_text)
+
+        # Show and then hide the "Refresh Complete" message box
+        msg_box = CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["refresh_complete"], QMessageBox.Information, self)
+        msg_box.show()  # Show the message box
+
+        # Use a QTimer to close the message box after 2 seconds (2000 milliseconds)
+        QTimer.singleShot(2000, msg_box.accept)
+
 
     def set_language(self, language_code):
         if language_code in translations:
@@ -797,6 +837,8 @@ class MainWindow(QMainWindow):
                 button.setToolTip(translations[self.current_language][text_key])
 
             self.update_status_labels()
+            self.refresh_button.setText(translations[self.current_language]["refresh_status"])
+
 
             for widget in QApplication.topLevelWidgets():
                 if isinstance(widget, AboutDialog):
@@ -810,13 +852,11 @@ class MainWindow(QMainWindow):
         about_dialog = AboutDialog(self)
         about_dialog.exec_()
 
-    # --- Removed Mouse Dragging methods ---
-
     # --- Button Actions (using threads) ---
 
     def backup_registry(self):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
-        worker = backup_registry(self) # Use the decorated function
+        worker = backup_registry(self)
         worker.signals.result.connect(self.backup_registry_result)
         worker.signals.error.connect(self.handle_thread_error)
         worker.signals.finished.connect(self.thread_finished)
@@ -828,7 +868,6 @@ class MainWindow(QMainWindow):
             CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["backup_success"].format(message), QMessageBox.Information, self).exec_()
             winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC)
         else:
-            # Error is already logged in the thread, just show the message box
             CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["backup_error"].format(message), QMessageBox.Critical, self).exec_()
             winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
 
@@ -840,7 +879,7 @@ class MainWindow(QMainWindow):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
         backup_file = os.path.join(BACKUP_DIR, "registry_backup_latest.reg")
         if os.path.exists(backup_file):
-            worker = restore_registry(self, backup_file) # Pass 'self' and backup_file
+            worker = restore_registry(self, backup_file)
             worker.signals.result.connect(self.restore_registry_result)
             worker.signals.error.connect(self.handle_thread_error)
             worker.signals.finished.connect(self.thread_finished)
@@ -855,8 +894,7 @@ class MainWindow(QMainWindow):
             CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["restore_success"], QMessageBox.Information, self).exec_()
             winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC)
         else:
-             # The error message is already emitted by the worker thread, we just show it here.
-            winsound.PlaySound("SystemHand", winsound.SND_ASYNC) # Error sound
+            winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
 
     def call_disable_windows_security(self):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
@@ -871,24 +909,37 @@ class MainWindow(QMainWindow):
             CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["disable_security_success"], QMessageBox.Information, self).exec_()
             winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC)
         else:
-            # Error handling is already done in the thread, just update UI
             winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
         self.update_status_labels()
 
     def call_disable_antivirus(self):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
-        worker = disable_third_party_antivirus_obfuscated(self)
+        # Pass self (the MainWindow instance) to the worker
+        worker = disable_third_party_antivirus_obfuscated(self, self)
+        worker.signals.result.connect(self.disable_antivirus_result)  # Connect to result signal
         worker.signals.error.connect(self.handle_thread_error)
         worker.signals.finished.connect(self.thread_finished)
-        worker.signals.result.connect(lambda x :self.update_status_labels()) # Update on completion
-        # No specific result handling needed, just update status
+        worker.signals.finished.connect(self.update_status_labels)
+
+
+    def disable_antivirus_result(self, success):
+        if success:
+            self.log_message(translations[self.current_language]["disable_antivirus_success"])
+            CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["disable_antivirus_success"], QMessageBox.Information, self).exec_()
+            winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC)
+        else:
+            self.log_message(translations[self.current_language]["disable_antivirus_error"])
+            CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["disable_antivirus_error"], QMessageBox.Critical, self).exec_()
+            winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
+        # self.update_status_labels() # Already updating on finished signal
+
 
     def call_prevent_services(self):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
         worker = prevent_security_service_restarts_obfuscated(self)
         worker.signals.error.connect(self.handle_thread_error)
         worker.signals.finished.connect(self.thread_finished)
-        worker.signals.result.connect(lambda x: self.update_status_labels())
+        worker.signals.finished.connect(self.update_status_labels)
 
     def call_disable_windows_features(self):
         winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
@@ -904,8 +955,7 @@ class MainWindow(QMainWindow):
             CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["disable_features_success"], QMessageBox.Information, self).exec_()
             winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC)
         else:
-             # Error handling is already done in thread.
-             winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
+            winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
         self.update_status_labels()
 
     def call_disable_all(self):
@@ -917,10 +967,9 @@ class MainWindow(QMainWindow):
         if reply == QMessageBox.Yes:
             winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
 
-            # Use separate workers for each disabling function
             workers = [
                 disable_windows_security_obfuscated(self),
-                disable_third_party_antivirus_obfuscated(self),
+                disable_third_party_antivirus_obfuscated(self, self), # Pass main_window here
                 prevent_security_service_restarts_obfuscated(self),
                 disable_windows_features_obfuscated(self),
                 disable_event_logging(self),
@@ -928,25 +977,22 @@ class MainWindow(QMainWindow):
                 disable_asr_rules(self)
             ]
 
-            # Connect signals to handle errors and completion
             for worker in workers:
                 worker.signals.error.connect(self.handle_thread_error)
                 worker.signals.finished.connect(self.thread_finished)
-            # Connect only the final update after all complete.
+
             workers[-1].signals.finished.connect(self.update_status_labels)
-            workers[-1].signals.finished.connect(lambda: self.log_message(translations[self.current_language]["disable_all_success"])) # Log success
+            workers[-1].signals.finished.connect(lambda: self.log_message(translations[self.current_language]["disable_all_success"]))
             workers[-1].signals.finished.connect(lambda: CustomMessageBox(translations[self.current_language]["window_title"], translations[self.current_language]["disable_all_success"], QMessageBox.Information, self).exec_())
             workers[-1].signals.finished.connect(lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ASYNC))
+
     def handle_thread_error(self, error_message):
-        """Handles errors from worker threads."""
-        self.log_message(error_message, logging.ERROR)  # Log the error
+        self.log_message(error_message, logging.ERROR)
         CustomMessageBox(translations[self.current_language]["window_title"], error_message, QMessageBox.Critical, self).exec_()
         winsound.PlaySound("SystemHand", winsound.SND_ASYNC)
 
     def thread_finished(self):
-        """Handles the finished signal from worker threads."""
-        #  print("Thread finished!") # Debugging
-        pass # Can add UI updates here if needed (e.g., re-enable buttons)
+        pass
 
 # --- Main Application Execution ---
 
