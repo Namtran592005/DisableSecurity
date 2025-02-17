@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/version-1.5-blue.svg)](https://github.com/yourusername/yourrepository)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yourusername/yourrepository/blob/main/LICENSE)
 <!-- Thay thế yourusername và yourrepository bằng thông tin của bạn -->
-![Screenshot 2025-02-17 061613 =250x250](https://github.com/user-attachments/assets/f79e7d28-b9bc-40e6-8df8-4bc3f060a31|250x250)
+![Screenshot 2025-02-17 061613 =250x250](https://github.com/user-attachments/assets/f79e7d28-b9bc-40e6-8df8-4bc3f060a31|width=250)
 
 ## Giới thiệu
 
