@@ -114,6 +114,10 @@ Nếu bạn muốn đóng góp cho dự án, bạn có thể tạo một pull re
 Công cụ này được phát hành theo giấy phép MIT.  Xem tệp `LICENSE` để biết thêm chi tiết.
 
 **Disclaimer (Miễn trừ trách nhiệm):** This tool is provided "as is" without warranty of any kind.  Use it at your own risk. The author is not responsible for any damage caused by the use of this tool.  This tool should only be used for legitimate research, testing, or educational purposes in controlled environments.
+
+## Độ An toàn
+
+- Kết quả sau khi được quét bởi Virustotal
     
 <img src="https://github.com/Namtran592005/DisableSecurity/blob/main/%E1%BA%A2nh%20ch%E1%BB%A5p%20m%C3%A0n%20h%C3%ACnh_17-2-2025_61248_www.virustotal.com.jpeg" width=50% height=50%>
 ------------------
