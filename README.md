@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/badge/version-1.5-blue.svg)](https://github.com/yourusername/yourrepository)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yourusername/yourrepository/blob/main/LICENSE)
 <!-- Thay thế yourusername và yourrepository bằng thông tin của bạn -->
+![Screenshot 2025-02-17 061613](https://github.com/user-attachments/assets/f79e7d28-b9bc-40e6-8df8-4bc3f060a314)
 
 ## Giới thiệu
 
@@ -117,8 +118,8 @@ Công cụ này được phát hành theo giấy phép MIT.  Xem tệp `LICENSE`
 
 ## Tác giả
 
-Namtran5905
-
----
-
 **Disclaimer (Miễn trừ trách nhiệm):** This tool is provided "as is" without warranty of any kind.  Use it at your own risk. The author is not responsible for any damage caused by the use of this tool.  This tool should only be used for legitimate research, testing, or educational purposes in controlled environments.
+
+![Uploading Ảnh chụp màn hình_17-2-2025_61248_www.virustotal.com.jpeg…]()
+![Ảnh chụp màn hình_17-2-2025_61312_www virustotal com](https://github.com/user-attachments/assets/160e3f0b-1529-414f-8a02-1bdd5c49a569)
+
