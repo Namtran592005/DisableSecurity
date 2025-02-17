@@ -17,7 +17,7 @@
     *   Tắt Windows Defender (Antivirus và AntiSpyware).
     *   Tắt Tường lửa Windows (Windows Firewall).
 
-*   **Vô hiệu hóa Phần mềm Chống Virus của Bên Thứ Ba:**  Cố gắng tắt các tiến trình và dịch vụ liên quan đến các phần mềm chống virus phổ biến (Kaspersky, ESET, Avast, AVG, Bitdefender, McAfee).
+*   **Vô hiệu hóa Phần mềm Chống Virus của Bên Thứ Ba:**  Cố gắng tắt các tiến trình và dịch vụ liên quan đến các phần mềm chống virus phổ biến (Kaspersky, ESET, Avast, AVG, Bitdefender, McAfee). (thử nghiệm)
 
 *   **Ngăn Dịch vụ Bảo mật Khởi động lại:** Vô hiệu hóa các dịch vụ Windows liên quan đến bảo mật (WinDefend, SecurityHealthService, wscsvc, MpsSvc) để ngăn chúng tự động khởi động lại.
 
@@ -30,13 +30,12 @@
     *   Vô hiệu hóa Truy cập Thư mục Được Kiểm soát.
     *   Vô hiệu hóa Bảo vệ Mạng.
     *   Vô hiệu hóa các quy tắc Giảm Bề mặt Tấn công (ASR).
-    *   Cố gắng vô hiệu hóa Chống Giả mạo (Tamper Protection) - có thể yêu cầu khởi động lại.
-    *   Cố gắng vô hiệu hóa Ghi nhật ký Sự kiện Windows (Windows Event Logging) - một hành động rất mạnh mẽ.
+    *   vô hiệu hóa Chống Giả mạo (Tamper Protection)
+    *   vô hiệu hóa Ghi nhật ký Sự kiện Windows (Windows Event Logging)
 
 *   **Sao lưu và Khôi phục Registry:**
-    *   Sao lưu các khóa registry bị ảnh hưởng *trước khi* thực hiện thay đổi.
+    *   Sao lưu toàn bộ các khóa registry bị ảnh hưởng *trước khi* thực hiện thay đổi.
     *   Khôi phục registry từ bản sao lưu gần nhất.
-    *   Chỉ sao lưu những key registry bị thay đổi, không sao lưu toàn bộ, tối ưu dung lượng.
 
 *   **Giao diện Người dùng Trực quan:**
     *   Giao diện đồ họa (GUI) thân thiện, dễ sử dụng.
