@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/version-1.5-blue.svg)](https://github.com/yourusername/yourrepository)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yourusername/yourrepository/blob/main/LICENSE)
 <!-- Thay thế yourusername và yourrepository bằng thông tin của bạn -->
-<img src="https://i.imgur.com/ZWnhY9T.png" width=50% height=50%>
+<img src="https://github.com/Namtran592005/DisableSecurity/blob/main/Screenshot%202025-02-17%20061613.png" width=50% height=50%>
 
 ## Giới thiệu
 
